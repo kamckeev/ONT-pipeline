@@ -47,46 +47,72 @@ In general, all user defined variables which may change between different datase
      - TAIL Number of bases to trim from the end (3' end) of each read.
        - example value: 10
      - PC_THRESH Adapter match threshold used by Porechop to determine whether to trim an adapter; lower values make trimming more permissive. Keep at 90 unless good reason to change, beware of false positives
-        -example value: 90.0
+       -example value: 90.0
      - PORECHOP_OUTPUT_DIR Directory for output from Porechop trimming.
-          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference
+       - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference
      - PORECHOP_OUTFILE Path to the Porechop-trimmed FASTQ file.
-          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference/SAMPLE_A.pass.porechop.fastq
+       - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference/SAMPLE_A.pass.porechop.fastq
      - CHOPPER_OUTPUT_DIR Directory for output from Chopper trimming.
-          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference
+       - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference
      - CHOPPER_OUTFILE Final output FASTQ file after both Porechop and Chopper steps.
-          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference/SAMPLE_A_v2.pass.porechop.chopped.fastq.gz
+       - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA/no_reference/SAMPLE_A_v2.pass.porechop.chopped.fastq.gz
 
 ## 3_hifiasm_assembly.sh
 - what it does: Uses hifiasm to assemble fasta sequences into contigs
 - Input Variables:
-      - NAME Name of the sample; used to build paths for both input and output files.
-           - example value: "SampleA_raw"
-      - THREADS Number of CPU threads used during hifiasm assembly; should match the scheduler directive (#BSUB -n).
-           - example value: 16
-      - MAIN_DIR Base directory where all outputs and intermediate results are stored.
-           - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs
-      - OUTPUT_DIR Target directory for the assembled genome and intermediate files. This is derived from MAIN_DIR and NAME.
-           - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/3_assembly/SampleA_raw
-      - INPUT_FASTQ Path to the final trimmed, filtered, and adapter-removed FASTQ file. Can be gzipped (.fastq.gz) or uncompressed.
-           - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA_raw/SampleA_raw.pass.porechop.chopped.fastq.gz
+     - NAME Name of the sample; used to build paths for both input and output files.
+          - example value: "SampleA_raw"
+     - THREADS Number of CPU threads used during hifiasm assembly; should match the scheduler directive (#BSUB -n).
+          - example value: 16
+     - MAIN_DIR Base directory where all outputs and intermediate results are stored.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs
+     - OUTPUT_DIR Target directory for the assembled genome and intermediate files. This is derived from MAIN_DIR and NAME.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/3_assembly/SampleA_raw
+     - INPUT_FASTQ Path to the final trimmed, filtered, and adapter-removed FASTQ file. Can be gzipped (.fastq.gz) or uncompressed.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/2_TRIM_data/SampleA_raw/SampleA_raw.pass.porechop.chopped.fastq.gz
 ## 5_QC_post.sh
 - what it does: Asseses quality of hifi assembly using assembly stats, BUSCO and QUAST
 - Input Variables:
-      - THREADS Number of threads used for multithreaded tools like quast, must match #BSUB -n
-           - example value: 16
-      - MAIN_DIR Root directory for all input/output subfolders in this workflow.
-           - example: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs
-      - ASSEMBLY Path to the final polished genome assembly file used for QC analysis.
-           - example: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/4_polishing/SampleA_2/HiFiasm_A_v2_assembly.bp.p_ctg.polished.fasta
-      - QC_POST Parent output directory for all QC tools' results. 
-           - example: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/5_QC_post/SampleA/polished
-      - QUAST_OUT Output directory for QUAST results.
-           - example: $QC_POST/quast
-      - STATS_OUT Output directory for assembly-stats results.
-           - example: $QC_POST/assembly_stats
-## 6_mummer.sh
+     - THREADS Number of threads used for multithreaded tools like quast, must match #BSUB -n
+          - example value: 16
+     - MAIN_DIR Root directory for all input/output subfolders in this workflow.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs
+     - ASSEMBLY Path to the final polished genome assembly file used for QC analysis.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/4_polishing/SampleA_2/HiFiasm_A_v2_assembly.bp.p_ctg.polished.fasta
+     - QC_POST Parent output directory for all QC tools' results. 
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/5_QC_post/SampleA/polished
+     - QUAST_OUT Output directory for QUAST results.
+          - example value: $QC_POST/quast
+     - STATS_OUT Output directory for assembly-stats results.
+          - example value: $QC_POST/assembly_stats
+## 6_scaffolding.sh
+ - what it does: Creates scaffolds from contigs using RagTag and then uses Tidk to detect telomeres
+ - Input Variables:
+     - DRAFT_ASSEMBLY Path to the raw draft genome assembly (before scaffolding).
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/3_assembly/SampleB_raw/SampleB_raw.p_ctg.fa
+     - REFERENCE_ASSEMBLY Reference genome used to guide RagTag scaffolding.
+          - example value: /rs1/researchers/c/ccgoller/epi2me/waxworm_reference_genome/GCF_026898425_CSIRO_AGI_GalMel_v1_genomic.fasta
+     - RAGTAG_OUT Directory where RagTag results will be saved.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/6_scaffolding/SampleB
+     - SCAFFOLDED_ASSEMBLY Final scaffolded genome output by RagTag.
+          - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/6_scaffolding/SampleB/ragtag.scaffold.fasta
+     - TIDK_OUT: Prefix used for Tidk output file names.
+          - example value: telomeres
+     -  --string "STRING" The telomeric repeat sequence Tidk will search for (common in Lepidoptera).
+          - example value:"AACCT"
+## 7_mummer.sh
+  - what it does: Uses MUMmer to align a scaffolded genome against a reference genome
+  - Input Variables:
+     - NAME prefix used for naming output files.
+         - example value: scaffoldsA_vs_REF
+     - THREADS Number of CPU threads to use for the job, must match $BSUB -n 
+         - example value: 16
+     - REF Path to the reference genome (used as the alignment target).
+         - example value: /rs1/researchers/c/ccgoller/epi2me/waxworm_reference_genome/GCF_026898425_CSIRO_AGI_GalMel_v1_genomic.fasta
+     - QUERY Path to the query genome (the genome to align against the reference).
+         - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/6_scaffolding/SampleA_v2/ragtag.scaffold.fasta
+     - OUTDIR Directory where all alignment and plotting output will be saved.
+         - example value: /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/7_alignment/mummer/scaffoldsA_vs_REF
+     - PREFIX  Full prefix path for output files (combines OUTDIR and NAME).
+         - example value: "${OUTDIR}/${NAME}" which evalueates to /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/7_alignment/mummer/scaffoldsA_vs_REF/scaffoldsA_vs_REF
 
-## 7_scaffolding.sh
-
-## 8_annotation.sh
