@@ -1,8 +1,8 @@
 #!/bin/bash
-#BSUB -J hifi_A                  # Job name
+#BSUB -J hifi_B                  # Job name
 #BSUB -n 16                       # Total cores
 #BSUB -R "span[hosts=1]"          # All cores on one node
-#BSUB -R "rusage[mem=25GB]"       # 10 GB RAM per core → 32×10 GB = 320 GB total
+#BSUB -R "rusage[mem=10GB]"       # 10 GB RAM per core → 32×10 GB = 320 GB total
 #BSUB -M 10GB                     # Enforce 10 GB/core
 #BSUB -W 500                      # Wall time, in minutes
 #BSUB -e /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/run_info/stderr/stderr.%J
@@ -16,7 +16,7 @@ ulimit -s unlimited
 
 # Number of threads to use (adjust as needed, needs to match "#BSUB -n" at top)
 THREADS=16
-NAME="SampleA_raw"
+NAME="ABnoK"
 
 ##########################
 # This script uses an already filtered and trimmed FASTQ file.
@@ -30,7 +30,9 @@ mkdir -p "$OUTPUT_DIR"
 # Input FASTQ file (already trimmed and adaptor removed)
 #can be gzipped or unzipped, code checks
 
-INPUT_FASTQ="${MAIN_DIR}/2_TRIM_data/SampleA_raw/SampleA_raw.pass.porechop.chopped.fastq.gz"
+INPUT_FASTQ="${MAIN_DIR}/3_assembly/ABnoKraken.fastq"
+#"${MAIN_DIR}/2_TRIM_data/SampleB_raw2_ALtest/SampleB_raw2_ALtest.pass.porechop.chopped.fastq"
+#"${MAIN_DIR}/2_TRIM_data/SampleA_raw/SampleA_raw.pass.porechop.chopped.fastq"
 
 ##################################
 #No edititing below

@@ -1,5 +1,5 @@
 #!/bin/bash
-#BSUB -J trim_B                 # Job name
+#BSUB -J trim_A                 # Job name
 #BSUB -n 16                     # Number of cores (adjust if needed)
 #BSUB -e /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/run_info/stderr/stderr.%J
 #BSUB -o /rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs/run_info/stdout/stdout.%J
@@ -10,7 +10,7 @@
 # Exit immediately if any command exits with a non-zero status
 set -e
 
-NAME="SampleB_raw"
+NAME="SampleB_raw2_ALtest"
 THREADS=16
 
 MAIN_DIR="/rs1/researchers/c/ccgoller/wwconsulting/SCRIPTS/outputs"
